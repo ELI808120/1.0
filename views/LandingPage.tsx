@@ -5,33 +5,17 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import type { LandingPageContent, Feature, Testimonial } from '../types';
 import { useAdmin } from '../contexts/AdminContext';
 import EditableText from '../components/EditableText';
-
-const initialLandingContent: LandingPageContent = {
-  heroTitle: 'למדו כיצד לתמוך בילדיכם עם ביטחון וכלים מעשיים',
-  heroSubtitle: 'הקורס הזה נועד לצייד אתכם בידע ובאסטרטגיות כדי לזהות חרדה אצל ילדים ולעזור להם להתמודד איתה בצורה בריאה וחיובית.',
-  heroButtonText: 'כניסה לקורס',
-  featuresTitle: 'מה תלמדו בקורס?',
-  features: [
-    { id: 1, icon: 'BookOpen', title: 'זיהוי סימני חרדה', description: 'כלים לזיהוי סימנים של חרדה אצל ילדים בגילאים שונים.' },
-    { id: 2, icon: 'ShieldCheck', title: 'שיטות תקשורת יעילות', description: 'למדו כיצד לדבר עם ילדיכם על רגשות באופן פתוח ותומך.' },
-    { id: 3, icon: 'Heart', title: 'תרגילים פרקטיים', description: 'קבלו תרגילים וטכניקות פרקטיות ליישום מיידי בבית.' },
-  ],
-  testimonialsTitle: 'מה הורים מספרים על הקורס',
-  testimonials: [
-      { id: 1, text: 'הקורס הזה פשוט שינה לנו את החיים. קיבלנו כלים מעשיים שהתחלנו ליישם מהיום הראשון וראינו שיפור משמעותי בתקשורת עם הילדה שלנו.', author: 'מיכל כהן, תל אביב' },
-      { id: 2, text: 'לא הייתי בטוח למה לצפות, אבל התוכן עלה על כל הציפיות. הכל מוסבר בצורה ברורה, בגובה העיניים, ונותן המון ביטחון להתמודד עם המצב.', author: 'יוסי לוי, חיפה' },
-  ]
-};
+import { initialData } from '../data/initialData';
 
 const iconList = ['BookOpen', 'ShieldCheck', 'Heart', 'BrainCircuit', 'Users', 'ThumbsUp', 'Smile', 'Settings', 'MessageCircle'];
 
 const LandingPage: React.FC = () => {
-  const [content, setContent] = useLocalStorage<LandingPageContent>('landingPage', initialLandingContent);
+  const [content, setContent] = useLocalStorage<LandingPageContent>('landingPage', initialData.landingPageContent);
   const { isAdmin } = useAdmin();
 
   // Safeguard against corrupted data in localStorage
-  const safeFeatures = Array.isArray(content.features) ? content.features : initialLandingContent.features;
-  const safeTestimonials = Array.isArray(content.testimonials) ? content.testimonials : initialLandingContent.testimonials;
+  const safeFeatures = Array.isArray(content.features) ? content.features : initialData.landingPageContent.features;
+  const safeTestimonials = Array.isArray(content.testimonials) ? content.testimonials : initialData.landingPageContent.testimonials;
   
   const handleContentChange = (field: keyof LandingPageContent, value: string) => {
     setContent(prev => ({ ...prev, [field]: value }));

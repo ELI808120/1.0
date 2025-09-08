@@ -31,54 +31,27 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onModuleUpdate, onDelet
 
   const handleAddVideo = () => {
     const trimmedCode = embedCode.trim();
-
-    // Basic validation to ensure it looks like an iframe embed code
-    if (!trimmedCode.startsWith('<iframe') || !trimmedCode.includes('</iframe>')) {
-        setError('קוד הטמעה לא תקין. יש להדביק את קוד ההטמעה המלא מהאתר.');
+    if (!trimmedCode) {
+        setError('נא להדביק קוד הטמעה.');
         return;
     }
 
     try {
         const parser = new DOMParser();
-        // Use text/html to parse even incomplete snippets robustly
         const doc = parser.parseFromString(trimmedCode, 'text/html');
         const iframe = doc.querySelector('iframe');
 
         if (!iframe) {
-            setError('קוד הטמעה לא תקין. לא נמצא תג iframe בתוך הקוד שהודבק.');
+            setError('קוד הטמעה לא תקין. יש לוודא שהקוד שהודבק מכיל תג <iframe>.');
             return;
         }
 
-        // 1. Remove fixed width and height attributes for responsiveness
-        iframe.removeAttribute('width');
-        iframe.removeAttribute('height');
-        
-        // Also clear any inline style dimensions, which some services use
-        iframe.style.width = '';
-        iframe.style.height = '';
-
-        // 2. Ensure allowfullscreen attribute is present for fullscreen functionality
-        iframe.setAttribute('allowfullscreen', ''); // It's a boolean attribute, value doesn't matter
-
-        // Also update the 'allow' attribute which is the modern standard
-        const allowPermissions = new Set((iframe.getAttribute('allow') || '').split(';').map(s => s.trim()).filter(Boolean));
-        allowPermissions.add('fullscreen');
-        iframe.setAttribute('allow', Array.from(allowPermissions).join('; '));
-        
-        // 3. Add a title for accessibility if it's missing or empty
-        if (!iframe.getAttribute('title')) {
-            const sanitizedTitle = module.title.replace(/"/g, "'");
-            iframe.setAttribute('title', `Video for ${sanitizedTitle}`);
-        }
-
-        // Serialize the cleaned-up iframe back to a string
-        const updatedCode = iframe.outerHTML;
-
-        onModuleUpdate(module.id, { videoCode: updatedCode });
+        // The embed code is valid, save the entire original code
+        onModuleUpdate(module.id, { videoCode: trimmedCode });
         setEmbedCode('');
         setError(null);
     } catch (e) {
-        console.error("Error parsing iframe code:", e);
+        console.error("Error parsing embed code:", e);
         setError('אירעה שגיאה בעיבוד קוד ההטמעה. אנא ודא שהקוד תקין.');
     }
   };
@@ -124,17 +97,18 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onModuleUpdate, onDelet
               )}
           </div>
           
-          {(module.videoCode || isAdmin) && (
-              <div 
-                  className="relative video-container aspect-video bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 mb-6 overflow-hidden"
-              >
-              {module.videoCode ? (
-                  <div className="absolute top-0 left-0 w-full h-full [&>iframe]:w-full [&>iframe]:h-full" dangerouslySetInnerHTML={{ __html: module.videoCode }} />
-              ) : (
-                  isAdmin && <span>הסרטון יוצג כאן לאחר הוספה ממצב ניהול</span>
-              )}
-              </div>
-          )}
+            {module.videoCode ? (
+                <div 
+                    className="video-embed-wrapper bg-gray-200 rounded-lg mb-6 overflow-hidden" 
+                    dangerouslySetInnerHTML={{ __html: module.videoCode }} 
+                />
+            ) : (
+                isAdmin && (
+                    <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 mb-6">
+                        <span>הסרטון יוצג כאן לאחר הוספה ממצב ניהול</span>
+                    </div>
+                )
+            )}
 
           <div className="prose max-w-none text-slate-700 mb-6">
               <h3 className="text-xl font-semibold text-slate-800 flex justify-between items-center">

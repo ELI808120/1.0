@@ -10,17 +10,11 @@ import AdminPanel from './components/AdminPanel';
 import useLocalStorage from './hooks/useLocalStorage';
 import type { SiteSettings } from './types';
 import { adjustColor } from './utils/color';
-
-const initialSiteSettings: SiteSettings = {
-  themeColor: '#4682B4', // SteelBlue
-  headerTitle: 'הקורס המקיף להורים: התמודדות עם חרדה',
-  footerText: '© 2024 כל הזכויות שמורות.',
-  contactEmail: 'contact@example.com',
-};
+import { initialData } from './data/initialData';
 
 function AppContent() {
   const { isAdmin } = useAdmin();
-  const [siteSettings] = useLocalStorage<SiteSettings>('siteSettings', initialSiteSettings);
+  const [siteSettings] = useLocalStorage<SiteSettings>('siteSettings', initialData.siteSettings);
 
   React.useEffect(() => {
     const styleId = 'dynamic-theme-styles';

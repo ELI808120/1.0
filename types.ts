@@ -53,3 +53,11 @@ export interface SiteSettings {
   footerText: string;
   contactEmail: string;
 }
+
+export interface SiteData {
+  siteSettings: SiteSettings;
+  landingPageContent: LandingPageContent;
+  modules: Module[];
+  courseInfo: CourseInfo;
+  faqs: FAQ[];
+}

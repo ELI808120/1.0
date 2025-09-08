@@ -7,48 +7,18 @@ import ModuleCard from '../components/ModuleCard';
 import { useAdmin } from '../contexts/AdminContext';
 import EditableSection from '../components/EditableSection';
 import FAQSection from '../components/FAQSection';
-
-const initialModules: Module[] = [
-  { 
-    id: 1, 
-    title: 'מודול 1: מבוא לחרדת ילדים', 
-    videoCode: null,
-    description: 'במודול זה נבין מהי חרדה, כיצד היא מתבטאת אצל ילדים ומהם הגורמים המרכזיים להופעתה. נלמד להבחין בין פחדים טבעיים לבין חרדה הדורשת התייחסות.',
-    resources: [
-        { id: 1, title: 'דף עבודה: זיהוי סימני חרדה', url: '#' },
-        { id: 2, title: 'מאמר מומלץ: חרדה בגיל הרך', url: '#' },
-    ]
-  },
-];
-
-const initialInfo: CourseInfo = {
-    about: 'כאן יופיע טקסט אודות הקורס. מנהל האתר יכול לערוך אותו.',
-    thanks: 'תודות מיוחדות לכל המשתתפים והתומכים בפרויקט חשוב זה.',
-    contact: 'לשאלות ופניות, ניתן לשלוח מייל לכתובת שמופיעה למטה או להשתמש בכפתור הישיר.',
-};
-
-const initialFaqs: FAQ[] = [
-    { id: 1, question: 'לאיזה גילאים הקורס מתאים?', answer: 'הקורס מתאים להורים לילדים בגילאי 4 עד 12, אך העקרונות הנלמדים בו יכולים להיות רלוונטיים גם לגילאים אחרים.' },
-    { id: 2, question: 'האם אני מקבל/ת גישה לכל התכנים מיד?', answer: 'כן, עם ההרשמה לקורס כל המודולים והחומרים הנלווים פתוחים לצפייה מיידית וללא הגבלת זמן.' },
-];
-
-const initialSiteSettings: SiteSettings = {
-  themeColor: '#4682B4',
-  headerTitle: '',
-  footerText: '',
-  contactEmail: '',
-};
+import { initialData } from '../data/initialData';
 
 const CoursePage: React.FC = () => {
-  const [modules, setModules] = useLocalStorage<Module[]>('courseModules', initialModules);
-  const [courseInfo, setCourseInfo] = useLocalStorage<CourseInfo>('courseInfo', initialInfo);
-  const [faqs, setFaqs] = useLocalStorage<FAQ[]>('courseFaqs', initialFaqs);
-  const [siteSettings] = useLocalStorage<SiteSettings>('siteSettings', initialSiteSettings);
+  const [modules, setModules] = useLocalStorage<Module[]>('courseModules', initialData.modules);
+  const [courseInfo, setCourseInfo] = useLocalStorage<CourseInfo>('courseInfo', initialData.courseInfo);
+  const [faqs, setFaqs] = useLocalStorage<FAQ[]>('courseFaqs', initialData.faqs);
+  const [siteSettings] = useLocalStorage<SiteSettings>('siteSettings', initialData.siteSettings);
   const { isAdmin } = useAdmin();
 
   // Safeguard against corrupted data in localStorage
-  const safeModules = Array.isArray(modules) ? modules : initialModules;
-  const safeFaqs = Array.isArray(faqs) ? faqs : initialFaqs;
+  const safeModules = Array.isArray(modules) ? modules : initialData.modules;
+  const safeFaqs = Array.isArray(faqs) ? faqs : initialData.faqs;
 
   const updateModule = (moduleId: number, updatedValues: Partial<Module>) => {
     setModules(prev => prev.map(m => m.id === moduleId ? { ...m, ...updatedValues } : m));
