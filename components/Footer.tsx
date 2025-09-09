@@ -1,10 +1,10 @@
 import React from 'react';
 import useLocalStorage from '../hooks/useLocalStorage';
 import type { SiteSettings } from '../types';
+import { initialData } from '../data/initialData';
 
 const Footer: React.FC = () => {
-  // FIX: Added missing 'contactEmail' property to the initial value to match the SiteSettings type.
-  const [siteSettings] = useLocalStorage<SiteSettings>('siteSettings', { themeColor: '', headerTitle: '', footerText: `© ${new Date().getFullYear()} כל הזכויות שמורות.`, contactEmail: '' });
+  const [siteSettings] = useLocalStorage<SiteSettings>('siteSettings', initialData.siteSettings);
 
   return (
     <footer className="bg-slate-700 text-white text-center p-4 mt-8">

@@ -2,11 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import useLocalStorage from '../hooks/useLocalStorage';
 import type { SiteSettings } from '../types';
+import { initialData } from '../data/initialData';
 
 
 const Header: React.FC = () => {
-  // FIX: Added missing 'contactEmail' property to the initial value to match the SiteSettings type.
-  const [siteSettings] = useLocalStorage<SiteSettings>('siteSettings', { themeColor: '', headerTitle: 'ברוכים הבאים', footerText: '', contactEmail: '' });
+  const [siteSettings] = useLocalStorage<SiteSettings>('siteSettings', initialData.siteSettings);
 
   return (
     <header className="bg-slate-700 shadow-md">

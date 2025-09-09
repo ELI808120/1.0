@@ -17,7 +17,7 @@ const AdminPanel: React.FC = () => {
 
     const handleExport = () => {
         try {
-            const dataToExport: SiteData = {
+            const currentData: SiteData = {
                 siteSettings: JSON.parse(localStorage.getItem('siteSettings') || JSON.stringify(initialData.siteSettings)),
                 landingPageContent: JSON.parse(localStorage.getItem('landingPage') || JSON.stringify(initialData.landingPageContent)),
                 modules: JSON.parse(localStorage.getItem('courseModules') || JSON.stringify(initialData.modules)),
@@ -25,24 +25,25 @@ const AdminPanel: React.FC = () => {
                 faqs: JSON.parse(localStorage.getItem('courseFaqs') || JSON.stringify(initialData.faqs)),
             };
 
-            const jsonString = `import type { SiteData } from '../types';\n\nexport const initialData: SiteData = ${JSON.stringify(dataToExport, null, 2)};`;
-            const blob = new Blob([jsonString], { type: 'application/typescript' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'initialData.ts';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            alert('קובץ הנתונים (initialData.ts) מוכן להורדה. \nיש להחליף את הקובץ הקיים בתיקיית `data` בפרויקט שלך.');
+            const fileContent = `import type { SiteData } from '../types';\n\nexport const initialData: SiteData = ${JSON.stringify(currentData, null, 2)};\n`;
 
+            const blob = new Blob([fileContent], { type: 'text/typescript;charset=utf-8;' });
+            const link = document.createElement("a");
+            if (link.download !== undefined) { 
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", "initialData.ts");
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
         } catch (error) {
             console.error("Failed to export data:", error);
-            alert("אירעה שגיאה בעת ייצוא הנתונים.");
+            alert("אירעה שגיאה בעת ייצוא הנתונים. בדוק את המסוף לקבלת פרטים.");
         }
     };
-
 
     if (!isPanelOpen) {
         return null;
@@ -64,7 +65,7 @@ const AdminPanel: React.FC = () => {
                         </button>
                     </div>
                     
-                    <div className="space-y-6 flex-grow overflow-y-auto pr-2">
+                    <div className="space-y-6 flex-grow overflow-y-auto pr-2 min-h-0">
                         <h3 className="text-xl font-semibold text-slate-700">הגדרות כלליות</h3>
                         
                         <div>
@@ -119,20 +120,21 @@ const AdminPanel: React.FC = () => {
                                 />
                             </div>
                         </div>
-                         <div className="border-t pt-6">
+                         <div className="border-t pt-6 space-y-4">
                             <h3 className="text-xl font-semibold text-slate-700">שמירת שינויים</h3>
-                             <p className="text-sm text-slate-500 mb-4">
-                                 כדי לשמור את כל שינויי התוכן באופן קבוע, יש לייצא את הנתונים ולהחליף את קובץ הנתונים בפרויקט.
-                                 <button onClick={() => setIsGuideOpen(true)} className="text-blue-600 hover:underline font-semibold mt-1 block text-right w-full">
-                                    איך עושים את זה? לחצו למדריך המלא
+                             <p className="text-sm text-slate-500">
+                                כדי לשמור את השינויים שביצעת, יש לייצא את קובץ הנתונים ולהחליף אותו בקוד המקור של הפרויקט.
+                                <button onClick={() => setIsGuideOpen(true)} className="text-blue-600 hover:underline font-semibold mt-1 block text-right w-full">
+                                    איך עושים את זה? לחץ כאן למדריך המלא.
                                 </button>
-                             </p>
+                            </p>
+                            
                             <button
                                 onClick={handleExport}
                                 className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
                             >
                                 <Download size={20} />
-                                ייצוא נתוני האתר
+                                ייצא נתונים
                             </button>
                         </div>
                     </div>
