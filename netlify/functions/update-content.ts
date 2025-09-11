@@ -1,5 +1,5 @@
 import type { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
-import type { SiteData } from '../../types';
+import type { SiteData } from '../../src/types';
 // FIX: Import Buffer to resolve TypeScript error "Cannot find name 'Buffer'". This is the standard way to access Buffer in modern Node.js.
 import { Buffer } from 'buffer';
 
@@ -31,7 +31,7 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
           body: JSON.stringify({ message: "Server configuration error: Missing GitHub environment variables." }),
       };
   }
-  const FILE_PATH = 'data/initialData.ts';
+  const FILE_PATH = 'src/data/initialData.ts';
   const API_URL = getRepoAPIUrl(GITHUB_REPO_OWNER, GITHUB_REPO_NAME, FILE_PATH);
 
   try {
